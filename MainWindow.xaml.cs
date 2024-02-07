@@ -86,5 +86,13 @@ namespace ParseidonJson
             }
         }
 
+        private void CopyModelButton_OnClickButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(outputBox.Text))
+            {
+                Clipboard.SetText(outputBox.Text);
+                MessageBox.Show("Content copied to clipboard!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
     }
 }
