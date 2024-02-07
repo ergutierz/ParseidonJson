@@ -3,56 +3,156 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ParseidonJson"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Row for Labels -->
-            <RowDefinition Height="*"/> <!-- Row for TextBoxes -->
-            <RowDefinition Height="Auto"/> <!-- Row for Progress Bar -->
-            <RowDefinition Height="Auto"/> <!-- Row for Buttons Panel -->
-            <RowDefinition Height="Auto"/> <!-- Additional Row for Elapsed Time Label -->
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        Title="Parseidon" Height="1200" Width="1500"
+        WindowStartupLocation="CenterScreen">
+    <TabControl>
+        <TabItem Header="JSON Parser">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="JSON" HorizontalAlignment="Center" />
+                <Label Grid.Row="0" Grid.Column="1" Content="C# MODEL" HorizontalAlignment="Center" />
+                <TextBox x:Name="jsonInputBox" Grid.Row="1" Grid.Column="0" Margin="5" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" AcceptsReturn="True" />
+                <TextBox x:Name="outputBox" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True" />
+                <ProgressBar x:Name="progressBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="20"
+                             Margin="5" IsIndeterminate="True" Visibility="Collapsed" />
+                <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
+                        <Button x:Name="submitButton" Content="Submit" Width="75" Height="25" Margin="0,5,5,5"
+                                Click="submitButton_Click" />
+                        <Button x:Name="clearButton" Content="Clear" Width="75" Height="25" Margin="0,5,5,5"
+                                Click="clearButton_Click" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                        <Button x:Name="fetchSportsStatsButton" Content="Get Sports" Width="75" Height="25"
+                                Margin="5,5,0,5" Click="FetchSportsStatsButton_OnClickButton_Click" />
+                        <Button x:Name="copyModelButton" Content="Copy" Width="75" Height="25" Margin="5,5,0,5"
+                                Click="CopyModelButton_OnClickButton_Click" />
+                    </StackPanel>
+                </Grid>
+                <Label x:Name="elapsedTimeLabel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"
+                       HorizontalAlignment="Center" />
+            </Grid>
+        </TabItem>
+        <TabItem Header="JSON Editor">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="5">
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Button Content="New JSON" Margin="5" Click="NewJson_Click" />
+                            <Button Content="Save JSON" Margin="5" Click="SaveJson_Click" />
+                            <Button Content="Validate JSON" Margin="5" Click="ValidateJson_Click" />
+                            <Button Content="Format JSON" Margin="5" Click="FormatJson_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Label Content="Background:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                        <ComboBox x:Name="backgroundSelectionComboBox" DockPanel.Dock="Right" Width="150" Margin="5"
+                                  SelectionChanged="BackgroundSelectionComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Default" Tag="White" />
+                            <ComboBoxItem Content="Dark" Tag="#1e1e1e" />
+                            <ComboBoxItem Content="Light Gray" Tag="#D3D3D3" />
+                            <ComboBoxItem Content="Ocean Blue" Tag="#1B263B" />
+                            <ComboBoxItem Content="Slate Gray" Tag="#708090" />
+                            <ComboBoxItem Content="Crimson Red" Tag="#DC143C" />
+                            <ComboBoxItem Content="Forest Green" Tag="#228B22" />
+                            <ComboBoxItem Content="Violet" Tag="#EE82EE" />
+                            <ComboBoxItem Content="Soft Pink" Tag="#FFB6C1" />
+                            <ComboBoxItem Content="Gold" Tag="#FFD700" />
+                        </ComboBox>
+                    </StackPanel>
+                </DockPanel>
+                <!-- AvalonEdit TextEditor for JSON editing -->
+                <avalonEdit:TextEditor x:Name="jsonEditor" Grid.Row="1" Margin="5" HorizontalScrollBarVisibility="Auto"
+                                       VerticalScrollBarVisibility="Auto" />
+                <TextBlock x:Name="messageArea" Grid.Row="2" Margin="5" Foreground="Red" />
+            </Grid>
+        </TabItem>
 
-        <!-- Labels for the TextBoxes -->
-        <Label Grid.Row="0" Grid.Column="0" Content="JSON" HorizontalAlignment="Center"/>
-        <Label Grid.Row="0" Grid.Column="1" Content="C# MODEL" HorizontalAlignment="Center"/>
-    
-        <!-- TextBox for JSON input -->
-        <TextBox x:Name="jsonInputBox" Grid.Row="1" Grid.Column="0" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
-    
-        <!-- TextBox for C# class output -->
-        <TextBox x:Name="outputBox" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True"/>
+        <TabItem Header="JSON Query">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" /> <!-- For File Path Input Label -->
+                    <RowDefinition Height="Auto" /> <!-- For File Path Input and Button -->
+                    <RowDefinition Height="Auto" /> <!-- For Query Input Label -->
+                    <RowDefinition Height="Auto" /> <!-- For Query Input -->
+                    <RowDefinition Height="Auto" /> <!-- For Execute Query Button -->
+                    <RowDefinition Height="Auto" /> <!-- For Query Results Label -->
+                    <RowDefinition Height="Auto" /> <!-- For JSON Paste Area Label -->
+                    <RowDefinition Height="*" />   <!-- For Query Results and JSON Paste side by side -->
+                </Grid.RowDefinitions>
 
-        <!-- Progress Bar for loading indicator -->
-        <ProgressBar x:Name="progressBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="20" Margin="5" IsIndeterminate="True" Visibility="Collapsed"/>
+                <!-- Label for File Path Input -->
+                <Label Content="File Path:" Grid.Row="0" Grid.Column="0" Margin="5" HorizontalAlignment="Left" />
 
-        <!-- Buttons Panel -->
-        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <!-- Left Buttons Panel -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
-                <Button x:Name="submitButton" Content="Submit" Width="75" Height="25" Margin="0,5,5,5" Click="submitButton_Click"/>
-                <Button x:Name="clearButton" Content="Clear" Width="75" Height="25" Margin="0,5,5,5" Click="clearButton_Click"/>
-            </StackPanel>
-            
-            <!-- Right Buttons Panel -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-                <Button x:Name="fetchSportsStatsButton" Content="Get Sports" Width="75" Height="25" Margin="5,5,0,5" Click="FetchSportsStatsButton_OnClickButton_Click"/>
-                <Button x:Name="copyModelButton" Content="Copy" Width="75" Height="25" Margin="5,5,0,5" Click="CopyModelButton_OnClickButton_Click"/>
-            </StackPanel>
-        </Grid>
+                <!-- File Path Input and Select File Button -->
+                <TextBox x:Name="filePathInput" Grid.Row="1" Grid.Column="0" Margin="5"
+                         ToolTip="Enter file path or select a file" />
+                <Button Content="Select JSON File" Grid.Row="1" Grid.Column="1" Margin="5,5,5,5"
+                        HorizontalAlignment="Right" Click="SelectJsonFile_Click" />
 
-        <!-- Elapsed Time Label -->
-        <Label x:Name="elapsedTimeLabel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Center"/>
-    </Grid>
+                <!-- Label for Query Input -->
+                <Label Content="Enter Query:" Grid.Row="2" Grid.Column="0" Margin="5" HorizontalAlignment="Left" />
+
+                <!-- Query Input -->
+                <TextBox x:Name="queryInput" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Height="100"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True" />
+
+                <!-- StackPanel for Execute Query and Clear All Buttons -->
+                <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                            HorizontalAlignment="Left" Margin="5">
+                    <Button Content="Execute Query" Click="ExecuteQuery_Click" Margin="0,0,5,0" />
+                    <Button Content="Clear All" Click="ClearAll_Click" />
+                </StackPanel>
+
+
+                <!-- Label for Query Results -->
+                <Label Content="Query Results:" Grid.Row="5" Grid.Column="0" Margin="5" HorizontalAlignment="Left" />
+
+                <!-- JSON Paste Box and Query Results Side by Side -->
+                <Grid Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" /> <!-- For Query Results -->
+                        <ColumnDefinition Width="1*" /> <!-- For JSON Paste Box -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Query Results Display -->
+                    <ScrollViewer Grid.Column="0" Margin="5">
+                        <TextBox x:Name="queryResults" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                 ToolTip="Query results" />
+                    </ScrollViewer>
+
+                    <!-- Direct JSON Paste Area -->
+                    <TextBox x:Name="jsonDirectInput" Grid.Column="1" Margin="5" AcceptsReturn="True"
+                             TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto" ToolTip="Paste JSON here"
+                             GotFocus="jsonDirectInput_GotFocus" LostFocus="jsonDirectInput_LostFocus" />
+
+                </Grid>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj": {}
+    "C:\\Users\\erikg\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj": {
+    "C:\\Users\\erikg\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj",
+        "projectUniqueName": "C:\\Users\\erikg\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj",
         "projectName": "ParseidonJson",
-        "projectPath": "C:\\Users\\user\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\RiderProjects\\ParseidonJson\\obj\\",
+        "projectPath": "C:\\Users\\erikg\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj",
+        "packagesPath": "C:\\Users\\erikg\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\erikg\\RiderProjects\\ParseidonJson\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\erikg\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -45,6 +45,10 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "dependencies": {
+            "AvalonEdit": {
+              "target": "Package",
+              "version": "[6.3.0.90, )"
+            },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
               "version": "[8.0.0, )"

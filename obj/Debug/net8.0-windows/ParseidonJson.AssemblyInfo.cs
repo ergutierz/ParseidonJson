@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ParseidonJson")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8615181616489446236483c88c41211dfaaea112")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f138e9525a885a19e9951e9d1f4160276ef55737")]
 [assembly: System.Reflection.AssemblyProductAttribute("ParseidonJson")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ParseidonJson")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

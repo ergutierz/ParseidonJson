@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "dQjyswAs+dW99ulkbP43x4B4W3hLWk+HNHzMl7bIqJZ+xNzZuNR3Bk7GMfDF5ZDbdD+E1vg2xAiQz97jnEDxog==",
+  "dgSpecHash": "QiCK1IdaNQbNU15/gd6O4CaZ3JfnzrIwOnl6soHZxk68pPznPIanR47M8Mc4X0tF2SNzHJGdp1EDvOKI03n4EQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj",
+  "projectFilePath": "C:\\Users\\erikg\\RiderProjects\\ParseidonJson\\ParseidonJson.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+    "C:\\Users\\erikg\\.nuget\\packages\\avalonedit\\6.3.0.90\\avalonedit.6.3.0.90.nupkg.sha512",
+    "C:\\Users\\erikg\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\erikg\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\erikg\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
   "logs": []
 }
