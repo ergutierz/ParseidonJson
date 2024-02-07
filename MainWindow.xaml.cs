@@ -37,8 +37,7 @@ namespace ParseidonJson
             catch (Exception ex)
             {
                 jsonInputBox.Text = string.Empty;
-                outputBox.Text = "Failed to fetch JSON data.";
-                elapsedTimeLabel.Content = $"Error: {ex.Message}";
+                outputBox.Text = $"Failed to convert JSON data: {ex.Message}";
             }
             finally
             {
@@ -79,8 +78,7 @@ namespace ParseidonJson
             catch (Exception ex)
             {
                 jsonInputBox.Text = string.Empty;
-                outputBox.Text = "Failed to fetch JSON data.";
-                elapsedTimeLabel.Content = $"Error: {ex.Message}";
+                outputBox.Text = $"Failed to fetch JSON data: {ex.Message}";
             }
             finally
             {

@@ -1,91 +1,131 @@
-﻿using System.Diagnostics;
-
-namespace ParseidonJson.parser;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-public class JsonToCSharpClassGenerator : IJsonToCSharpClassGenerator
+namespace ParseidonJson.parser
 {
-    private HashSet<string> generatedClasses = new HashSet<string>();
-    public double LastOperationElapsedTimeMs { get; private set; }
-
-    public string GenerateCSharpClasses(string json)
+    public class JsonToCSharpClassGenerator : IJsonToCSharpClassGenerator
     {
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-        var classes = new StringBuilder();
-        GenerateClassFromElement("Root", root, classes);
-        return classes.ToString();
-    }
+        public double LastOperationElapsedTimeMs { get; private set; }
 
-    private void GenerateClassFromElement(string className, JsonElement element, StringBuilder classes)
-    {
-        if (generatedClasses.Contains(className))
-            return;
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        generatedClasses.Add(className);
-
-        classes.AppendLine($"public class {className}");
-        classes.AppendLine("{");
-
-        foreach (var property in element.EnumerateObject())
+        public string GenerateCSharpClasses(string json)
         {
-            string propName = ConvertToPascalCase(property.Name);
-            string propType = DeterminePropertyType(property.Value, propName, classes);
-            classes.AppendLine($"    public {propType} {propName} {{ get; set; }}");
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            var classes = new StringBuilder();
+            ParseJson(json, classes);
+            stopwatch.Stop();
+            LastOperationElapsedTimeMs = stopwatch.Elapsed.TotalMilliseconds;
+            return classes.ToString();
         }
 
-        classes.AppendLine("}\n");
-        stopwatch.Stop();
-        LastOperationElapsedTimeMs = stopwatch.Elapsed.TotalMilliseconds;
-    }
-
-    private string DeterminePropertyType(JsonElement element, string propName, StringBuilder classes)
-    {
-        switch (element.ValueKind)
+        private void ParseJson(string json, StringBuilder classes)
         {
-            case JsonValueKind.Object:
-                var nestedClassName = $"{propName}Class";
-                GenerateClassFromElement(nestedClassName, element, classes);
-                return nestedClassName;
-            case JsonValueKind.Array:
-                return DetermineArrayType(element, propName, classes);
-            default:
-                return DetermineCSharpType(element.ValueKind);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            switch (root.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    GenerateClassFromElement("RootObject", root, classes, isRoot: true);
+                    break;
+                case JsonValueKind.Array:
+                    HandleRootLevelArray(root, classes);
+                    break;
+                default:
+                    // Handling for primitive types or unsupported JSON structures at the root
+                    classes.AppendLine("// The JSON does not contain a root object or array.");
+                    break;
+            }
         }
-    }
 
-    private string DetermineArrayType(JsonElement arrayElement, string propName, StringBuilder classes)
-    {
-        if (!arrayElement.EnumerateArray().MoveNext()) // Check if the array is empty
+        private void GenerateClassFromElement(string className, JsonElement element, StringBuilder classes, bool isRoot = false)
         {
-            return "List<object>"; // Default to List<object> for empty arrays
+            if (!isRoot && !className.EndsWith("Class"))
+            {
+                className += "Class";
+            }
+
+            classes.AppendLine($"public class {className}");
+            classes.AppendLine("{");
+
+            foreach (var property in element.EnumerateObject())
+            {
+                string propName = ConvertToPascalCase(property.Name);
+                string propType = DeterminePropertyType(property.Value, propName, classes);
+                classes.AppendLine($"    public {propType} {propName} {{ get; set; }}");
+            }
+
+            classes.AppendLine("}");
+            classes.AppendLine();
         }
-        
-        var firstElement = arrayElement.EnumerateArray().First();
-        var elementType = DeterminePropertyType(firstElement, $"{propName}Item", classes);
-        return $"List<{elementType}>";
-    }
 
-    private string DetermineCSharpType(JsonValueKind kind)
-    {
-        return kind switch
+        private string DeterminePropertyType(JsonElement element, string propName, StringBuilder classes)
         {
-            JsonValueKind.String => "string",
-            JsonValueKind.Number => "int", // Simplify to int, though more nuance is needed for real cases
-            JsonValueKind.True => "bool",
-            JsonValueKind.False => "bool",
-            // Removed JsonValueKind.Object and JsonValueKind.Array as those are handled in DeterminePropertyType
-            _ => "object",
-        };
-    }
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    var nestedClassName = $"{propName}Class";
+                    GenerateClassFromElement(nestedClassName, element, classes);
+                    return nestedClassName;
+                case JsonValueKind.Array:
+                    return $"List<{DetermineArrayType(element, propName, classes)}>";
+                default:
+                    return DetermineCSharpType(element.ValueKind);
+            }
+        }
 
-    private string ConvertToPascalCase(string name)
-    {
-        // Convert camelCase to PascalCase
-        return char.ToUpper(name[0]) + name.Substring(1);
+        private string DetermineArrayType(JsonElement arrayElement, string propName, StringBuilder classes)
+        {
+            var firstElement = arrayElement.EnumerateArray().FirstOrDefault();
+            if (firstElement.ValueKind == JsonValueKind.Object)
+            {
+                var itemClassName = $"{propName}ItemClass";
+                GenerateClassFromElement(itemClassName, firstElement, classes);
+                return itemClassName;
+            }
+            else
+            {
+                return DetermineCSharpType(firstElement.ValueKind);
+            }
+        }
+
+        private string DetermineCSharpType(JsonValueKind kind)
+        {
+            return kind switch
+            {
+                JsonValueKind.String => "string",
+                JsonValueKind.Number => "double", // Using double to accommodate both float and integer
+                JsonValueKind.True => "bool",
+                JsonValueKind.False => "bool",
+                _ => "object",
+            };
+        }
+
+        private void HandleRootLevelArray(JsonElement root, StringBuilder classes)
+        {
+            classes.AppendLine("public class RootArray");
+            classes.AppendLine("{");
+            classes.AppendLine("    public List<RootItem> Items { get; set; } = new List<RootItem>();");
+            classes.AppendLine("}");
+
+            var firstElement = root.EnumerateArray().FirstOrDefault();
+            if (firstElement.ValueKind == JsonValueKind.Object)
+            {
+                GenerateClassFromElement("RootItem", firstElement, classes);
+            }
+            else
+            {
+                // Update RootArray class definition to accommodate non-object array items directly
+                classes.AppendLine("// Root array contains non-object elements. Adjust the RootArray class accordingly.");
+            }
+        }
+
+        private string ConvertToPascalCase(string name)
+        {
+            return char.ToUpper(name[0]) + name.Substring(1);
+        }
     }
 }
