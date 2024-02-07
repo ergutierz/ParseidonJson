@@ -1,42 +1,92 @@
 ﻿using System.Windows;
-// Assuming JsonToCSharpClassGenerator is correctly implemented and available in the namespace
 using ParseidonJson.parser;
+using ParseidonJson.remote;
 
 namespace ParseidonJson
 {
     public partial class MainWindow : Window
     {
-        private readonly IJsonParser _jsonParser;
+        private readonly SportsService _sportsService;
+        private readonly IJsonToCSharpClassGenerator _jsonToCSharpClassGenerator;
 
-        // Assuming you have a default constructor for scenarios without dependency injection
         public MainWindow()
         {
             InitializeComponent();
-            // Initialize components or manually fetch dependencies if necessary
+        }
+        
+        public MainWindow(
+            SportsService sportsService,
+            IJsonToCSharpClassGenerator jsonToCSharpClassGenerator
+        ) : this()
+        {
+            _sportsService = sportsService;
+            _jsonToCSharpClassGenerator = jsonToCSharpClassGenerator;
         }
 
-        // Constructor with dependency injection for the IJsonParser
-        public MainWindow(IJsonParser jsonParser) : this()
+        private async void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            _jsonParser = jsonParser;
-        }
-
-        private void submitButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Use the input from jsonInputBox to generate C# class definitions
-            string jsonContent = jsonInputBox.Text;
-            var generator = new JsonToCSharpClassGenerator();
-            var csharpCode = generator.GenerateCSharpClasses(jsonContent);
-
-            // Display the generated C# class definitions in the csharpOutputBox
-            csharpOutputBox.Text = csharpCode;
+            progressBar.Visibility = Visibility.Visible;
+            try
+            {
+                string jsonContent = jsonInputBox.Text;
+                var dataModel = await Task.Run(() => _jsonToCSharpClassGenerator.GenerateCSharpClasses(jsonContent));
+                outputBox.Text = dataModel;
+                elapsedTimeLabel.Content =
+                    $"Elapsed Time for Processing: {_jsonToCSharpClassGenerator.LastOperationElapsedTimeMs:F2}ms";
+            }
+            catch (Exception ex)
+            {
+                jsonInputBox.Text = string.Empty;
+                outputBox.Text = "Failed to fetch JSON data.";
+                elapsedTimeLabel.Content = $"Error: {ex.Message}";
+            }
+            finally
+            {
+                progressBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
-            // Clear both the input and output TextBoxes
             jsonInputBox.Text = string.Empty;
-            csharpOutputBox.Text = string.Empty;
+            outputBox.Text = string.Empty;
+            elapsedTimeLabel.Content = string.Empty;
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _sportsService.Dispose();
+            base.OnClosed(e);
+        }
+
+        private async void FetchSportsStatsButton_OnClickButton_Click(object sender, RoutedEventArgs e)
+        {
+            progressBar.Visibility = Visibility.Visible;
+
+            string url = "http://sports.snoozle.net/search/nfl/searchHandler?fileType=inline&statType=teamStats&season=2020&teamName=26";
+            string jsonContent = string.Empty;
+
+            try
+            {
+                jsonContent = await Task.Run(() => _sportsService.FetchSportsStatsAsync(url).Result);
+
+                var dataModel = await Task.Run(() => _jsonToCSharpClassGenerator.GenerateCSharpClasses(jsonContent));
+
+                jsonInputBox.Text = jsonContent;
+                outputBox.Text = dataModel;
+                elapsedTimeLabel.Content =  $"Elapsed Time for Processing: {_jsonToCSharpClassGenerator.LastOperationElapsedTimeMs:F2}ms";
+            }
+            catch (Exception ex)
+            {
+                jsonInputBox.Text = string.Empty;
+                outputBox.Text = "Failed to fetch JSON data.";
+                elapsedTimeLabel.Content = $"Error: {ex.Message}";
+            }
+            finally
+            {
+                progressBar.Visibility = Visibility.Collapsed;
+            }
+        }
+
     }
 }

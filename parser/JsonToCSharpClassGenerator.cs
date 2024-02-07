@@ -1,4 +1,6 @@
-﻿namespace ParseidonJson.parser;
+﻿using System.Diagnostics;
+
+namespace ParseidonJson.parser;
 
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Text.Json;
 public class JsonToCSharpClassGenerator : IJsonToCSharpClassGenerator
 {
     private HashSet<string> generatedClasses = new HashSet<string>();
+    public double LastOperationElapsedTimeMs { get; private set; }
 
     public string GenerateCSharpClasses(string json)
     {
@@ -22,6 +25,7 @@ public class JsonToCSharpClassGenerator : IJsonToCSharpClassGenerator
     {
         if (generatedClasses.Contains(className))
             return;
+        Stopwatch stopwatch = Stopwatch.StartNew();
         generatedClasses.Add(className);
 
         classes.AppendLine($"public class {className}");
@@ -35,6 +39,8 @@ public class JsonToCSharpClassGenerator : IJsonToCSharpClassGenerator
         }
 
         classes.AppendLine("}\n");
+        stopwatch.Stop();
+        LastOperationElapsedTimeMs = stopwatch.Elapsed.TotalMilliseconds;
     }
 
     private string DeterminePropertyType(JsonElement element, string propName, StringBuilder classes)

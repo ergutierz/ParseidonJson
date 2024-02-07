@@ -8,26 +8,38 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/> <!-- Row for Labels -->
+            <RowDefinition Height="*"/> <!-- Row for TextBoxes -->
+            <RowDefinition Height="Auto"/> <!-- Row for Progress Bar -->
+            <RowDefinition Height="Auto"/> <!-- Row for Buttons Panel -->
+            <RowDefinition Height="Auto"/> <!-- Additional Row for Elapsed Time Label -->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
+
+        <!-- Labels for the TextBoxes -->
+        <Label Grid.Row="0" Grid.Column="0" Content="JSON" HorizontalAlignment="Center"/>
+        <Label Grid.Row="0" Grid.Column="1" Content="C# MODEL" HorizontalAlignment="Center"/>
+    
         <!-- TextBox for JSON input -->
-        <TextBox x:Name="jsonInputBox" Grid.Row="0" Grid.Column="0" Margin="5" TextWrapping="Wrap" VerticalAlignment="Stretch" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-        
+        <TextBox x:Name="jsonInputBox" Grid.Row="1" Grid.Column="0" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True"/>
+    
         <!-- TextBox for C# class output -->
-        <TextBox x:Name="csharpOutputBox" Grid.Row="0" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalAlignment="Stretch" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+        <TextBox x:Name="outputBox" Grid.Row="1" Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True"/>
+
+        <!-- Progress Bar for loading indicator -->
+        <ProgressBar x:Name="progressBar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="20" Margin="5" IsIndeterminate="True" Visibility="Collapsed"/>
 
         <!-- Buttons Panel -->
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
-            <!-- Submit Button -->
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
             <Button x:Name="submitButton" Content="Submit" Width="75" Height="25" Margin="0,5,5,5" Click="submitButton_Click"/>
-            <!-- Clear Button -->
             <Button x:Name="clearButton" Content="Clear" Width="75" Height="25" Margin="0,5,5,5" Click="clearButton_Click"/>
+            <Button x:Name="fetchSportsStatsButton" Content="Get Sports" Width="75" Height="25" Margin="0,5,5,5" Click="FetchSportsStatsButton_OnClickButton_Click"/>
         </StackPanel>
+
+        <!-- Elapsed Time Label -->
+        <Label x:Name="elapsedTimeLabel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Center"/>
     </Grid>
 </Window>

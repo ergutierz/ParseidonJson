@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using ParseidonJson.parser;
+using ParseidonJson.remote;
 
 namespace ParseidonJson;
 
@@ -23,8 +24,8 @@ public partial class App : Application
 
     private void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IJsonParser, JsonParser>();
+        services.AddSingleton<IJsonToCSharpClassGenerator, JsonToCSharpClassGenerator>();
+        services.AddSingleton<SportsService>();
         services.AddSingleton<MainWindow>();
-        // Add other services and windows as needed
     }
 }
