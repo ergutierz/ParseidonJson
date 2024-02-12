@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewModel="clr-namespace:ParseidonJson.ViewModel"
+                    xmlns:view="clr-namespace:ParseidonJson.View">
+
+    <DataTemplate DataType="{x:Type viewModel:HomeVM}">
+        <view:Home />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:CustomerVM}">
+        <view:Customers />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:ProductVM}">
+        <view:Products />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:OrderVM}">
+        <view:Orders />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:TransactionVM}">
+        <view:Transactions />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:ShipmentVM}">
+        <view:Shipments />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModel:SettingVM}">
+        <view:Settings />
+    </DataTemplate>
+    
+</ResourceDictionary>

@@ -53,6 +53,24 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
+      "Mvvm/1.0.4": {
+        "type": "package",
+        "compile": {
+          "lib/Mvvm.dll": {}
+        },
+        "runtime": {
+          "lib/Mvvm.dll": {}
+        }
+      },
+      "MVVM.Tools/1.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net461/MVVM.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/net461/MVVM.Tools.dll": {}
+        }
+      },
       "Newtonsoft.Json/13.0.3": {
         "type": "package",
         "compile": {
@@ -64,6 +82,48 @@
           "lib/net6.0/Newtonsoft.Json.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "System.Reactive/6.0.1-preview.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/System.Reactive.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/System.Reactive.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        }
+      },
+      "System.Reactive.Linq/6.0.1-preview.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Reactive": "6.0.1-preview.1",
+          "System.Threading.Tasks.Extensions": "4.5.4"
+        },
+        "compile": {
+          "lib/netstandard2.0/System.Reactive.Linq.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Reactive.Linq.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Threading.Tasks.Extensions/4.5.4": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.1/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/_._": {}
         }
       }
     }
@@ -152,6 +212,34 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Mvvm/1.0.4": {
+      "sha512": "A+sO/MjaI6W3GAQGgkmu3iOQSXl2k/o7g/D2kQhzZ9qm94Md161Qk48pXqJpsCiS3uRnkvihSB3mT1bayTAuVA==",
+      "type": "package",
+      "path": "mvvm/1.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/Mvvm.XML",
+        "lib/Mvvm.dll",
+        "mvvm.1.0.4.nupkg.sha512",
+        "mvvm.nuspec"
+      ]
+    },
+    "MVVM.Tools/1.1.0": {
+      "sha512": "HOKZC8wD0Bqg4wN4rrk8WOCVnMl3Z4YA2X3PWNUC50nFh6+A78G0t+u8oEa8CWi1pIMaZW3vmpJP8FknHi5Cmg==",
+      "type": "package",
+      "path": "mvvm.tools/1.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net460/MVVM.Tools.dll",
+        "lib/net461/MVVM.Tools.dll",
+        "lib/net462/MVVM.Tools.dll",
+        "lib/net472/MVVM.Tools.dll",
+        "mvvm.tools.1.1.0.nupkg.sha512",
+        "mvvm.tools.nuspec"
+      ]
+    },
     "Newtonsoft.Json/13.0.3": {
       "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
       "type": "package",
@@ -181,13 +269,101 @@
         "newtonsoft.json.nuspec",
         "packageIcon.png"
       ]
+    },
+    "System.Reactive/6.0.1-preview.1": {
+      "sha512": "3+0YK2nGSOs8VNL56B6YzCE70RO1f8QdmVu7/w3ifnY++SBihgKaM7QWYDgAL8TPTltNhU2Mtxc/5gLwGh1KyA==",
+      "type": "package",
+      "path": "system.reactive/6.0.1-preview.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/net6.0-windows10.0.19041/_._",
+        "build/net6.0/_._",
+        "buildTransitive/net6.0-windows10.0.19041/_._",
+        "buildTransitive/net6.0/_._",
+        "icon.png",
+        "lib/net472/System.Reactive.dll",
+        "lib/net472/System.Reactive.xml",
+        "lib/net6.0-windows10.0.19041/System.Reactive.dll",
+        "lib/net6.0-windows10.0.19041/System.Reactive.xml",
+        "lib/net6.0/System.Reactive.dll",
+        "lib/net6.0/System.Reactive.xml",
+        "lib/netstandard2.0/System.Reactive.dll",
+        "lib/netstandard2.0/System.Reactive.xml",
+        "lib/uap10.0.18362/System.Reactive.dll",
+        "lib/uap10.0.18362/System.Reactive.pri",
+        "lib/uap10.0.18362/System.Reactive.xml",
+        "readme.md",
+        "system.reactive.6.0.1-preview.1.nupkg.sha512",
+        "system.reactive.nuspec"
+      ]
+    },
+    "System.Reactive.Linq/6.0.1-preview.1": {
+      "sha512": "MCJxPWPxnxyqEE3UzkotkD1MWuWypXcbMlolO7KRqIDrniA4NwyojhVhgyHnhcG0MRyCYNYnAZyb98EY20a87g==",
+      "type": "package",
+      "path": "system.reactive.linq/6.0.1-preview.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net472/System.Reactive.Linq.dll",
+        "lib/net472/System.Reactive.Linq.xml",
+        "lib/netstandard2.0/System.Reactive.Linq.dll",
+        "lib/netstandard2.0/System.Reactive.Linq.xml",
+        "lib/uap10.0.18362/System.Reactive.Linq.dll",
+        "lib/uap10.0.18362/System.Reactive.Linq.pri",
+        "lib/uap10.0.18362/System.Reactive.Linq.xml",
+        "readme.md",
+        "system.reactive.linq.6.0.1-preview.1.nupkg.sha512",
+        "system.reactive.linq.nuspec"
+      ]
+    },
+    "System.Threading.Tasks.Extensions/4.5.4": {
+      "sha512": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg==",
+      "type": "package",
+      "path": "system.threading.tasks.extensions/4.5.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net461/System.Threading.Tasks.Extensions.dll",
+        "lib/net461/System.Threading.Tasks.Extensions.xml",
+        "lib/netcoreapp2.1/_._",
+        "lib/netstandard1.0/System.Threading.Tasks.Extensions.dll",
+        "lib/netstandard1.0/System.Threading.Tasks.Extensions.xml",
+        "lib/netstandard2.0/System.Threading.Tasks.Extensions.dll",
+        "lib/netstandard2.0/System.Threading.Tasks.Extensions.xml",
+        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.dll",
+        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.xml",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/netcoreapp2.1/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+        "system.threading.tasks.extensions.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
       "AvalonEdit >= 6.3.0.90",
+      "MVVM.Tools >= 1.1.0",
       "Microsoft.Extensions.DependencyInjection >= 8.0.0",
-      "Newtonsoft.Json >= 13.0.3"
+      "Mvvm >= 1.0.4",
+      "Newtonsoft.Json >= 13.0.3",
+      "System.Reactive.Linq >= 6.0.1-preview.1"
     ]
   },
   "packageFolders": {
@@ -239,13 +415,25 @@
             "target": "Package",
             "version": "[6.3.0.90, )"
           },
+          "MVVM.Tools": {
+            "target": "Package",
+            "version": "[1.1.0, )"
+          },
           "Microsoft.Extensions.DependencyInjection": {
             "target": "Package",
             "version": "[8.0.0, )"
           },
+          "Mvvm": {
+            "target": "Package",
+            "version": "[1.0.4, )"
+          },
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
+          },
+          "System.Reactive.Linq": {
+            "target": "Package",
+            "version": "[6.0.1-preview.1, )"
           }
         },
         "imports": [
@@ -270,5 +458,27 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Mvvm 1.0.4' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Mvvm",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'MVVM.Tools 1.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "MVVM.Tools",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
 }
