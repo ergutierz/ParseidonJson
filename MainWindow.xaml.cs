@@ -5,8 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using ParseidonJson.editor;
-using ParseidonJson.parser;
+using ParseidonJson.core;
 using ParseidonJson.remote;
 
 namespace ParseidonJson
@@ -14,8 +13,8 @@ namespace ParseidonJson
     public partial class MainWindow : Window
     {
         private readonly SportsService _sportsService;
-        private readonly IJsonToCSharpClassGenerator _jsonToCSharpClassGenerator;
-        private readonly IJsonEditor _jsonEditor;
+        private readonly IJsonParser _jsonParser;
+        private readonly IJsonQuery _jsonQuery;
         private const string Placeholder = "Paste JSON here (optional)";
 
         public MainWindow()
@@ -32,13 +31,13 @@ namespace ParseidonJson
 
         public MainWindow(
             SportsService sportsService,
-            IJsonToCSharpClassGenerator jsonToCSharpClassGenerator,
-            IJsonEditor jsonEditor
+            IJsonParser jsonParser,
+            IJsonQuery jsonQuery
         ) : this()
         {
             _sportsService = sportsService;
-            _jsonToCSharpClassGenerator = jsonToCSharpClassGenerator;
-            _jsonEditor = jsonEditor;
+            _jsonParser = jsonParser;
+            _jsonQuery = jsonQuery;
         }
 
         // Begin Region Json Parsing
@@ -49,10 +48,10 @@ namespace ParseidonJson
             try
             {
                 string jsonContent = jsonInputBox.Text;
-                var dataModel = await Task.Run(() => _jsonToCSharpClassGenerator.GenerateCSharpClasses(jsonContent));
+                var dataModel = await Task.Run(() => _jsonParser.GenerateCSharpClasses(jsonContent));
                 outputBox.Text = dataModel;
                 elapsedTimeLabel.Content =
-                    $"Elapsed Time for Processing: {_jsonToCSharpClassGenerator.LastOperationElapsedTimeMs:F2}ms";
+                    $"Elapsed Time for Processing: {_jsonParser.LastOperationElapsedTimeMs:F2}ms";
             }
             catch (Exception ex)
             {
@@ -90,12 +89,12 @@ namespace ParseidonJson
             {
                 jsonContent = await Task.Run(() => _sportsService.FetchSportsStatsAsync(url).Result);
 
-                var dataModel = await Task.Run(() => _jsonToCSharpClassGenerator.GenerateCSharpClasses(jsonContent));
+                var dataModel = await Task.Run(() => _jsonParser.GenerateCSharpClasses(jsonContent));
 
                 jsonInputBox.Text = jsonContent;
                 outputBox.Text = dataModel;
                 elapsedTimeLabel.Content =
-                    $"Elapsed Time for Processing: {_jsonToCSharpClassGenerator.LastOperationElapsedTimeMs:F2}ms";
+                    $"Elapsed Time for Processing: {_jsonParser.LastOperationElapsedTimeMs:F2}ms";
             }
             catch (Exception ex)
             {
@@ -124,7 +123,6 @@ namespace ParseidonJson
 
         private void NewJson_Click(object sender, RoutedEventArgs e)
         {
-            // Clear the editor for a new JSON object
             jsonEditor.Text = "{}";
             messageArea.Text = "New JSON object ready to be edited.";
         }
@@ -137,16 +135,15 @@ namespace ParseidonJson
                 DefaultExt = ".json",
                 Title = "Save JSON"
             };
-    
+
             bool? result = saveFileDialog.ShowDialog();
-    
+
             if (result == true)
             {
                 string filename = saveFileDialog.FileName;
-        
-                // Ensure AvalonEdit.Text property is used for AvalonEdit instance
+
                 File.WriteAllText(filename, jsonEditor.Text);
-        
+
                 messageArea.Text = "JSON saved successfully.";
                 messageArea.Foreground = new SolidColorBrush(Colors.Green);
             }
@@ -156,7 +153,6 @@ namespace ParseidonJson
         {
             try
             {
-                // Using Newtonsoft.Json for parsing which throws a JsonReaderException if JSON is invalid
                 Newtonsoft.Json.Linq.JToken.Parse(jsonEditor.Text);
                 messageArea.Text = "JSON is valid.";
                 messageArea.Foreground = new SolidColorBrush(Colors.Green);
@@ -172,7 +168,6 @@ namespace ParseidonJson
         {
             try
             {
-                // Parsing the JSON text to a dynamic object and re-serializing it with indentation
                 var parsedJson = Newtonsoft.Json.Linq.JToken.Parse(jsonEditor.Text);
                 jsonEditor.Text = parsedJson.ToString(Newtonsoft.Json.Formatting.Indented);
                 messageArea.Text = "JSON formatted successfully.";
@@ -194,15 +189,12 @@ namespace ParseidonJson
                 var backgroundColor = (Color)ColorConverter.ConvertFromString(colorCode);
                 jsonEditor.Background = new SolidColorBrush(backgroundColor);
 
-                // Check if the selected background color is black
                 if (colorCode.Equals("#1E1E1E", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Change the text color to white
                     jsonEditor.Foreground = new SolidColorBrush(Colors.White);
                 }
                 else
                 {
-                    // Change the text color to black or any other default color
                     jsonEditor.Foreground = new SolidColorBrush(Colors.Black);
                 }
             }
@@ -215,18 +207,15 @@ namespace ParseidonJson
 
         private void ConfigureAvalonEdit()
         {
-            // Example configuration for AvalonEdit
             jsonEditor.ShowLineNumbers = true;
             jsonEditor.TextArea.TextEntering += TextArea_TextEntering;
             jsonEditor.TextArea.TextEntered += TextArea_TextEntered;
 
-            // Load syntax highlighting, assuming you have the JSON definition available
             LoadJsonSyntaxHighlighting();
         }
 
         private void LoadJsonSyntaxHighlighting()
         {
-            // Path to the .xshd file
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "ParseidonJson.JsonSyntaxHighlighting.xshd";
 
@@ -236,11 +225,9 @@ namespace ParseidonJson
                 {
                     using (XmlReader reader = XmlReader.Create(stream))
                     {
-                        // Load the .xshd file
                         var highlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
                             ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
 
-                        // Apply the highlighting to the editor
                         jsonEditor.SyntaxHighlighting = highlighting;
                     }
                 }
@@ -254,17 +241,13 @@ namespace ParseidonJson
 
         private void ExecuteQuery_Click(object sender, RoutedEventArgs e)
         {
-            // Retrieve JSON data either from the direct input box or a file
-            string
-                jsonText = jsonDirectInput
-                    .Text; // This assumes direct input; you might also load from filePathInput.Text if needed
+            string jsonText = jsonDirectInput.Text;
 
             if (string.IsNullOrWhiteSpace(jsonText) && !string.IsNullOrWhiteSpace(filePathInput.Text))
             {
-                // Load JSON from file if direct input is empty but a file path is provided
                 try
                 {
-                    jsonText = System.IO.File.ReadAllText(filePathInput.Text);
+                    jsonText = File.ReadAllText(filePathInput.Text);
                 }
                 catch (Exception ex)
                 {
@@ -283,14 +266,11 @@ namespace ParseidonJson
                 return;
             }
 
-            // Initialize the JsonEditor with the provided JSON text
-            var jsonEditor = new JsonEditor();
             try
             {
-                jsonEditor.LoadJson(jsonText);
-                var results = jsonEditor.QueryJson(queryString);
+                _jsonQuery.LoadJson(jsonText);
+                var results = _jsonQuery.QueryJson(queryString);
 
-                // Handle both single and multiple results
                 if (results is Newtonsoft.Json.Linq.JArray || results is Newtonsoft.Json.Linq.JObject)
                 {
                     queryResults.Text = results.ToString(Newtonsoft.Json.Formatting.Indented);
@@ -311,18 +291,16 @@ namespace ParseidonJson
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*", // Filter for JSON files
+                Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*",
                 Title = "Select a JSON File"
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
-                // Validate the file type if necessary
                 string filePath = openFileDialog.FileName;
-                if (System.IO.Path.GetExtension(filePath).Equals(".json", StringComparison.OrdinalIgnoreCase))
+                if (Path.GetExtension(filePath).Equals(".json", StringComparison.OrdinalIgnoreCase))
                 {
                     filePathInput.Text = filePath;
-                    // Optional: Load and display the JSON file content in queryInput or process it directly
                 }
                 else
                 {
@@ -334,26 +312,21 @@ namespace ParseidonJson
 
         private void ClearAll_Click(object sender, RoutedEventArgs e)
         {
-            // Clear all text inputs and outputs
             filePathInput.Clear();
             queryInput.Clear();
             jsonDirectInput.Clear();
             queryResults.Clear();
-
-            // Optionally, reset the placeholder text for jsonDirectInput
             ResetJsonDirectInput();
         }
 
         private void ResetJsonDirectInput()
         {
-            jsonDirectInput.Text =
-                Placeholder; // Assuming Placeholder is a class-level constant for the placeholder text
+            jsonDirectInput.Text = Placeholder;
             jsonDirectInput.Foreground = Brushes.Gray;
-            // This checks if it's necessary to reset the placeholder. If the box is focused, it won't set the placeholder text.
+
             if (!jsonDirectInput.IsFocused)
             {
-                jsonDirectInput_GotFocus(jsonDirectInput,
-                    null); // You might not need this if you always want the placeholder text reset here
+                jsonDirectInput_GotFocus(jsonDirectInput, null);
             }
         }
 
@@ -362,7 +335,7 @@ namespace ParseidonJson
             if (jsonDirectInput.Text == Placeholder)
             {
                 jsonDirectInput.Text = "";
-                jsonDirectInput.Foreground = Brushes.Black; // Change text color back to default
+                jsonDirectInput.Foreground = Brushes.Black;
             }
         }
 
@@ -376,43 +349,37 @@ namespace ParseidonJson
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
-            // Your logic here, e.Text will contain the text that was entered
             if (e.Text == "{")
             {
-                // For example, automatically insert a closing brace
                 jsonEditor.Document.Insert(jsonEditor.CaretOffset, "}");
-                // Adjust the caret position if necessary
                 jsonEditor.CaretOffset--;
             }
         }
 
         private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
-            // Example logic for handling special character input
-            if (e.Text == "\"") // Checks if the user is entering a double quote
+            if (e.Text == "\"")
             {
                 var offset = jsonEditor.CaretOffset;
-                jsonEditor.Document.Insert(offset, "\"\""); // Inserts a pair of double quotes
-                jsonEditor.CaretOffset = offset + 1; // Moves the caret inside the quotes
-                e.Handled = true; // Prevents the default handling (i.e., inserting a single quote)
+                jsonEditor.Document.Insert(offset, "\"\"");
+                jsonEditor.CaretOffset = offset + 1;
+                e.Handled = true;
             }
             else if (e.Text == "[")
             {
                 var offset = jsonEditor.CaretOffset;
-                jsonEditor.Document.Insert(offset, "[]"); // Inserts a pair of square brackets
-                jsonEditor.CaretOffset = offset + 1; // Moves the caret inside the brackets
-                e.Handled = true; // Prevents the default handling (i.e., inserting a single bracket)
+                jsonEditor.Document.Insert(offset, "[]");
+                jsonEditor.CaretOffset = offset + 1;
+                e.Handled = true;
             }
             else if (e.Text == "{")
             {
                 var offset = jsonEditor.CaretOffset;
-                jsonEditor.Document.Insert(offset, "{}"); // Inserts a pair of curly braces
-                jsonEditor.CaretOffset = offset + 1; // Moves the caret inside the braces
-                e.Handled = true; // Prevents the default handling (i.e., inserting a single brace)
+                jsonEditor.Document.Insert(offset, "{}");
+                jsonEditor.CaretOffset = offset + 1;
+                e.Handled = true;
             }
-            // Add more conditions as needed for other special characters
         }
-
 
         // End Region Json Query
     }
